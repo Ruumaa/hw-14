@@ -22,30 +22,16 @@ function AddBook() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // let formData = new FormData();
-      // formData.append("title", title);
-      // formData.append("author", author);
-      // formData.append("publisher", publisher);
-      // formData.append("year", year);
-      // formData.append("pages", pages);
-      // formData.append("image", image);
+      let formData = new FormData();
+      formData.append("title", title);
+      formData.append("author", author);
+      formData.append("publisher", publisher);
+      formData.append("year", year);
+      formData.append("pages", pages);
+      formData.append("image", image);
 
-      // await axios.post("/api/books", formData)
+      await axios.post("/api/books", formData)
       
-      await axios.post("/api/books", {
-        title,
-        author,
-        publisher,
-        year: Number(year),
-        pages: Number(pages),
-        image,
-      });
-      setTitle("");
-      setAuthor("");
-      setPublisher("");
-      setYear("");
-      setPages("");
-      setImage("");
       Swal.fire({
         icon: "success",
         title: "Create Book Success",
@@ -131,7 +117,7 @@ function AddBook() {
                 <input
                   type="file"
                   className="input input-bordered"
-                  // value={image}
+                  required
                   onChange={(e) => setImage(e.target.files[0])}
                 />
               </div>

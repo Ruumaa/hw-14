@@ -11,7 +11,7 @@ function UpdateBook({ book }) {
   const [publisher, setPublisher] = useState(book.publisher);
   const [year, setYear] = useState(book.year);
   const [pages, setPages] = useState(book.pages);
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState(book.image);
 
   const router = useRouter();
   const handleModal = () => {
@@ -21,23 +21,29 @@ function UpdateBook({ book }) {
   const handleUpdate = async (e) => {
     e.preventDefault();
     //kirim data yg sudah diinput
-    await axios.patch(`/api/books/${book.id}`, {
-      title,
-      author,
-      publisher,
-      year: Number(year),
-      pages: Number(pages),
-      image,
-    });
-    Swal.fire({
-      icon: "success",
-      title: "Update Book Success",
-      text: "Book updated sucessfully!",
-      showConfirmButton: false,
-      timer: 1500,
-    });
-    router.refresh();
-    setIsOpen(false);
+    try {
+      let formData = new FormData();
+      formData.append("title", title);
+      formData.append("author", author);
+      formData.append("publisher", publisher);
+      formData.append("year", year);
+      formData.append("pages", pages);
+      formData.append("image", image);
+   
+      await axios.patch(`/api/books/${book.id}`, formData)
+      Swal.fire({
+        icon: "success",
+        title: "Update Book Success",
+        text: "Book updated sucessfully!",
+        showConfirmButton: false,
+        timer: 1500,
+      });
+      router.refresh();
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Something wrong! at updatedBook", error)
+    }
+ 
   };
   return (
     <div>
@@ -110,8 +116,8 @@ function UpdateBook({ book }) {
               <input
                 type="file"
                 className="input input-bordered"
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
+                required
+                onChange={(e) => setImage(e.target.files[0])}
               />
             </div>
             <div className="modal-action">

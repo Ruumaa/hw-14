@@ -1,18 +1,8 @@
-import { PrismaClient } from "@prisma/client";
 import AddBook from "./addBook";
 import DeleteBook from "./deleteBook";
 import UpdateBook from "./updateBook";
-
-const prisma = new PrismaClient();
-
-const getBooks = async () => {
-  try {
-    const result = await prisma.book.findMany();
-    return result;
-  } catch (error) {
-    console.error(error)
-  }
-};
+import getBooks from "./getBooks";
+import ShowImage from "./ShowImage.js";
 
 const Books = async () => {
   const books = await getBooks();
@@ -41,9 +31,11 @@ const Books = async () => {
                 <td>{book.publisher}</td>
                 <td>{book.year}</td>
                 <td>{book.pages}</td>
-                <td>{book.image}</td>
+                <td>
+                  <ShowImage imageLink={book.image} />
+                </td>
                 <td className="flex justify-around">
-                  <UpdateBook book={book}/>
+                  <UpdateBook book={book} />
                   <DeleteBook book={book} />
                 </td>
               </tr>

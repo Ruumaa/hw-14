@@ -4,42 +4,32 @@ import prisma from "@/app/lib/prisma";
 
 export const POST = async (request) => {
   try {
-    const body = await request.json()
-    // const body = await request.formData();
-    // const file = body.get("image");
-    // if (!file) {
-    //   return NextResponse.json(
-    //     { success: false },
-    //     { error: "File tidak valid" },
-    //     { status: 400 }
-    //   );
-    // }
+    // const body = await request.json()
+    const body = await request.formData();
+    const file = body.get("image");
+    if (!file) {
+      return NextResponse.json(
+        { success: false },
+        { error: "File tidak valid" },
+        { status: 400 }
+      );
+    }
 
-    // const bytes = await file.arrayBuffer();
-    // const buffer = Buffer.from(bytes);
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
 
-    // const imagePath = Date.now() + file.name;
-    // const path = process.cwd() + "/public/" + imagePath;
-    // await writeFile(path, buffer);
+    const imagePath = Date.now() + file.name;
+    const path = process.cwd() + "/public/" + imagePath;
+    await writeFile(path, buffer);
 
-    // const books = await prisma.book.create({
-    //   data: {
-    //     title: body.title,
-    //     author: body.author,
-    //     publisher: body.publisher,
-    //     year: body.year,
-    //     pages: body.pages,
-    //     image: `http://localhost:3000/${imagePath}`,
-    //   },
-    // });
     const books = await prisma.book.create({
       data: {
-        title: body.title,
-        author: body.author,
-        publisher: body.publisher,
-        year: body.year,
-        pages: body.pages,
-        image: body.image,
+        title: body.get("title"),
+        author: body.get("author"),
+        publisher: body.get("publisher"),
+        year: Number(body.get("year")),
+        pages: Number(body.get("pages")),
+        image: `http://localhost:3000/${imagePath}`,
       },
     });
     return NextResponse.json(
